@@ -25,11 +25,5 @@ pipeline {
                 bat 'dotnet test'
             }
         }
-        stage('Publish') {
-            steps {
-                // پابلیش کردن پروژه
-                bat 'dotnet publish --configuration Release --output ./publish'
-            }
-        }
     }
 }
