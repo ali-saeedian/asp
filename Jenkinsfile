@@ -4,7 +4,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // چک‌اوت کردن کد از برنچ مستر
-                git branch: 'master', credentialsId: 'your-credentials-id', url: 'https://github.com/your-repo.git'
+               git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
             }
         }
         stage('Restore') {
