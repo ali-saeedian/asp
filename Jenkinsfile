@@ -1,35 +1,34 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout'){
-           steps{
-             echo 'Starting Chackout from branch master'
-             git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
-            echo 'Checkout completed '
-          }   
+        stage('Checkout') {
+            steps {
+                // چک‌اوت کردن کد از برنچ مستر
+               git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
+            }
         }
-        
-        stage('Restore')
-        {
-            steps{
-                echo 'Starting package restore'
+        stage('Restore') {
+            steps {
+                // رستور کردن پکیج‌ها با دستور dotnet
                 bat 'dotnet restore'
-                echo 'Restore completed successfuly'
             }
         }
-        
-        stage('Build'){
-            steps{
-                echo 'Starting build process'
-                bat 'dotnet build'
-                echo 'Build completed successfuly'
+        stage('Build') {
+            steps {
+                // بیلد کردن پروژه
+                bat 'dotnet build --configuration Release'
             }
         }
-        stage('Test'){
-            steps{
-                echo 'Starting unit test'
+        stage('Test') {
+            steps {
+                // اجرای تست‌های واحد
                 bat 'dotnet test'
-                echo 'Tests completed successfuly'
+            }
+        }
+        stage('Publish') {
+            steps {
+                // پابلیش کردن پروژه
+                bat 'dotnet publish --configuration Release --output ./publish'
             }
         }
     }
