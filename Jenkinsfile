@@ -6,7 +6,8 @@ pipeline {
                 // نمایش پیام برای شروع چک‌اوت
                 echo 'Starting Checkout from branch master...'
                 // چک‌اوت کردن کد از برنچ مستر
-                git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
+                bat 'git config --global http.postBuffer 524288000'
+               git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
                 // نمایش پیام پس از اتمام چک‌اوت
                 echo 'Checkout completed successfully!'
             }
