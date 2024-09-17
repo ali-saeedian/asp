@@ -11,7 +11,7 @@ pipeline {
         // مرحله اول: چک‌اوت از مخزن GitHub
         stage('Checkout') {
             steps {
-                git branch: 'master', credentialsId: 'your-credentials-id', url: 'https://github.com/your-repo.git'
+                git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
             }
         }
 
