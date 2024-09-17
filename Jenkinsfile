@@ -41,25 +41,28 @@ pipeline {
             }
         }
 
-        // مرحله ششم: پاکسازی فایل‌های موقتی
-        stage('Cleanup') {
-            steps {
+       stage('Cleanup')
+        {
+            steps{
                 echo 'Cleaning up workspace...'
-                cleanWs()
+                clenWs()
             }
-        }
+       }
     }
 
-   post {
-    success {
+    post{
+       success {
+    mail to: 'Rezanabhani387@gmail.com',
+         subject:"Build Success,
+         body:"Good news! the build succeded."
+        }
+      failure {
         mail to: 'Rezanabhani387@gmail.com',
-             subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-             body: "Good news! The build succeeded."
+            subject:"Build Failure,
+          body:"the build failed"
+      }
     }
-    failure {
-        mail to: 'Rezanabhani387@gmail.com',
-             subject: "Build Failure: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-             body: "Unfortunately, the build failed. Check the logs for more details."
-    }
-}
+    
+
+  
 }
