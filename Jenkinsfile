@@ -1,45 +1,67 @@
 pipeline {
     agent any
+    
+    environment {
+        // متغیرهای محیطی برای نام پروژه و مسیر انتشار
+        PROJECT_NAME = 'AspNetCoreApp'
+        PUBLISH_DIR = "C:\\Jenkins_Publish\\${PROJECT_NAME}"
+    }
+    
     stages {
+        // مرحله اول: چک‌اوت از مخزن GitHub
         stage('Checkout') {
             steps {
-                // نمایش پیام برای شروع چک‌اوت
-                echo 'Starting Checkout from branch master...'
-                // چک‌اوت کردن کد از برنچ مستر
-               git branch: 'master', url: 'https://github.com/rezanabhani/AryanRad.git'
-                // نمایش پیام پس از اتمام چک‌اوت
-                echo 'Checkout completed successfully!'
+                git branch: 'master', credentialsId: 'your-credentials-id', url: 'https://github.com/your-repo.git'
             }
         }
+
+        // مرحله دوم: رستور پکیج‌ها
         stage('Restore') {
             steps {
-                // نمایش پیام برای شروع رستور
-                echo 'Starting package restore...'
-                // رستور کردن پکیج‌ها با دستور dotnet
                 bat 'dotnet restore'
-                // نمایش پیام پس از اتمام رستور
-                echo 'Restore completed successfully!'
             }
         }
+
+        // مرحله سوم: بیلد پروژه
         stage('Build') {
             steps {
-                // نمایش پیام برای شروع بیلد
-                echo 'Starting build process...'
-                // بیلد کردن پروژه
                 bat 'dotnet build --configuration Release'
-                // نمایش پیام پس از اتمام بیلد
-                echo 'Build completed successfully!'
             }
         }
+
+        // مرحله چهارم: اجرای تست‌ها
         stage('Test') {
             steps {
-                // نمایش پیام برای شروع تست
-                echo 'Starting unit tests...'
-                // اجرای تست‌های واحد
                 bat 'dotnet test'
-                // نمایش پیام پس از اتمام تست
-                echo 'Tests completed successfully!'
+            }
+        }
+
+        // مرحله پنجم: انتشار پروژه
+        stage('Publish') {
+            steps {
+                bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
+            }
+        }
+
+        // مرحله ششم: پاکسازی فایل‌های موقتی
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning up workspace...'
+                cleanWs()
             }
         }
     }
+
+   post {
+    success {
+        mail to: 'youremail@example.com',
+             subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+             body: "Good news! The build succeeded."
+    }
+    failure {
+        mail to: 'youremail@example.com',
+             subject: "Build Failure: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+             body: "Unfortunately, the build failed. Check the logs for more details."
+    }
+}
 }
