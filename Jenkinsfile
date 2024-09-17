@@ -41,7 +41,18 @@ pipeline {
             }
         }
 
-       
+        post {
+    success {
+        mail to: 'Rezanabhani387@gmail.com',
+             subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+             body: "Good news! The build succeeded."
+    }
+    failure {
+        mail to: 'Rezanabhani387@gmail.com',
+             subject: "Build Failure: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+             body: "Unfortunately, the build failed. Check the logs for more details."
+    }
+}
     
     }
 }
