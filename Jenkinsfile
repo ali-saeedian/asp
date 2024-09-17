@@ -40,4 +40,4 @@ pipeline {
                 bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
             }
         }
-    }
+    
