@@ -1,11 +1,16 @@
 pipeline {
     agent any
-    
+
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['Development', 'Production'], description: 'Select the environment')
+        choice(name: 'BUILD_TYPE', choices: ['Release', 'Debug'], description: 'Select the build type')
+    }
+
     environment {
         PROJECT_NAME = 'AspNetCoreApp'
-        PUBLISH_DIR = "C:\\Jenkins_Publish\\${PROJECT_NAME}"
+        PUBLISH_DIR = "C:\\Jenkins_Publish\\${PROJECT_NAME}\\${params.ENVIRONMENT}"
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -13,56 +18,48 @@ pipeline {
             }
         }
 
-      
         stage('Restore') {
             steps {
                 bat 'dotnet restore'
             }
         }
 
-     
         stage('Build') {
             steps {
-                bat 'dotnet build'
+                bat "dotnet build --configuration ${params.BUILD_TYPE}"
             }
         }
 
-      
         stage('Test') {
             steps {
                 bat 'dotnet test'
             }
         }
 
-       
         stage('Publish') {
             steps {
-                bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
+                bat "dotnet publish --configuration ${params.BUILD_TYPE} --output ${PUBLISH_DIR}"
             }
         }
 
-       stage('Cleanup')
-        {
-            steps{
+        stage('Cleanup') {
+            steps {
                 echo 'Cleaning up workspace...'
-                clenWs()
+                cleanWs()
             }
-       }
-    }
-
-    post{
-       success {
-    mail to: 'Rezanabhani387@gmail.com',
-         subject:"Build Success : ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-         body:"Good news! the build succeded."
         }
-      failure {
-        mail to: 'Rezanabhani387@gmail.com',
-            subject:"Build Failure : ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-          body:"the build failed"
-      }
     }
-    
 
-  
+    post {
+        success {
+            mail to: 'Rezanabhani387@gmail.com',
+                 subject: "Build Success : ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                 body: "Good news! The build succeeded."
+        }
+        failure {
+            mail to: 'Rezanabhani387@gmail.com',
+                 subject: "Build Failure : ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                 body: "The build failed."
+        }
+    }
 }
