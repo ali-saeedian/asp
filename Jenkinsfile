@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['Development', 'Production'], description: 'Select the environment')
-        choice(name: 'BUILD_TYPE', choices: ['Release', 'Debug'], description: 'Select the build type')
-    }
+  parameters{
+      choice(name: 'ENVIRONMENT', choices:['Development','Production'],description: 'Select the environment')
+      choice (name: 'Build_Type',chices:['Release', 'Debug'],description:'Select the build type')
+  }
 
     environment {
         PROJECT_NAME = 'AspNetCoreApp'
@@ -20,7 +20,9 @@ pipeline {
 
         stage('Restore') {
             steps {
+                retry(3){
                 bat 'dotnet restore'
+                }
             }
         }
 
