@@ -28,7 +28,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat "dotnet build --configuration ${params.BUILD_TYPE}"
+                bat "dotnet build"
             }
         }
 
