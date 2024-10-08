@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['Development', 'Production'], description: 'Select the environment')
-        choice(name: 'Build_Type', choices: ['Release', 'Debug'], description: 'Select the build type')
-    }
+
 
     environment {
         PROJECT_NAME = 'AspNetCoreApp'
