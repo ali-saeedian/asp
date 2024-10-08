@@ -40,7 +40,7 @@ pipeline {
 
         stage('Publish') {
             steps {
-                bat "dotnet publish --configuration ${params.BUILD_TYPE} --output ${PUBLISH_DIR}"
+                bat "dotnet publish  --output ${PUBLISH_DIR}"
             }
         }
 
