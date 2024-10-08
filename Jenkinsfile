@@ -1,11 +1,11 @@
 pipeline {
     agent any
 
-
-
     environment {
         PROJECT_NAME = 'AspNetCoreApp'
-        PUBLISH_DIR = "C:\\Jenkins_Publish\\${PROJECT_NAME}\\${params.ENVIRONMENT}"
+        ENVIRONMENT = 'Development'   // Set default to 'Development'
+        Build_Type = 'Release'        // Set default to 'Release'
+        PUBLISH_DIR = "C:\\Jenkins_Publish\\${PROJECT_NAME}\\${ENVIRONMENT}"
     }
 
     stages {
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat "dotnet build --configuration ${params.Build_Type}"
+                bat "dotnet build --configuration ${Build_Type}"
             }
         }
 
@@ -37,7 +37,7 @@ pipeline {
 
         stage('Publish') {
             steps {
-                bat "dotnet publish --configuration ${params.Build_Type} --output ${PUBLISH_DIR}"
+                bat "dotnet publish --configuration ${Build_Type} --output ${PUBLISH_DIR}"
             }
         }
 
@@ -63,7 +63,6 @@ pipeline {
     }
 
     triggers {
-        // Trigger build when there is a change in the Git repository
-        pollSCM('H/5 * * * *')  // Poll the repository every 5 minutes for changes
+        pollSCM('H/5 * * * *')
     }
 }
