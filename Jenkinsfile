@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-  parameters{
-      choice(name: 'ENVIRONMENT', choices:['Development','Production'],description: 'Select the environment')
-      choice (name: 'Build_Type',choices:['Release', 'Debug'],description:'Select the build type')
-  }
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['Development', 'Production'], description: 'Select the environment')
+        choice(name: 'Build_Type', choices: ['Release', 'Debug'], description: 'Select the build type')
+    }
 
     environment {
         PROJECT_NAME = 'AspNetCoreApp'
@@ -20,15 +20,15 @@ pipeline {
 
         stage('Restore') {
             steps {
-                retry(3){
-                bat 'dotnet restore'
+                retry(3) {
+                    bat 'dotnet restore'
                 }
             }
         }
 
         stage('Build') {
             steps {
-                bat "dotnet build"
+                bat "dotnet build --configuration ${params.Build_Type}"
             }
         }
 
@@ -40,7 +40,7 @@ pipeline {
 
         stage('Publish') {
             steps {
-                bat "dotnet publish  --output ${PUBLISH_DIR}"
+                bat "dotnet publish --configuration ${params.Build_Type} --output ${PUBLISH_DIR}"
             }
         }
 
@@ -63,5 +63,10 @@ pipeline {
                  subject: "Build Failure : ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                  body: "The build failed."
         }
+    }
+
+    triggers {
+        // Trigger build when there is a change in the Git repository
+        pollSCM('H/5 * * * *')  // Poll the repository every 5 minutes for changes
     }
 }
